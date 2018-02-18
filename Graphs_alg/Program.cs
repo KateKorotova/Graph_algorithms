@@ -89,8 +89,32 @@ namespace Graphs_alg
             return result;
         }
 
-        internal List<Vertex> dfs(int index)
+        internal void dfs(int index)
         {
+            Stack<Vertex> stack = new Stack<Vertex>();
+            bool[] check = new bool[count];
+            for (int i = 0; i < count; i++)
+                check[i] = true;
+            stack.Push(vertex[index]);
+            while (stack.Count != 0)
+            {
+                bool del = true; 
+                Vertex temp = stack.Peek();
+                
+                for (int j = 0; j < temp.neighbors.Count; j++)
+                {
+                    if (check[temp.neighbors[j].number] == true)
+                    {
+                        check[temp.neighbors[j].number] = false;
+                        stack.Push(temp.neighbors[j]);
+                        del = false;
+                        break;
+                    }
+
+                }
+                if (del == true)
+                    stack.Pop();
+            }
 
         }
     }
