@@ -12,12 +12,11 @@ namespace Graphs_alg
         internal Vertex(int num)
         {
             this.number = num;
-            neighbors = new List<Vertex>();
+            neighbors = new List<Tuple<Vertex, int>>();
         }
         internal int number;
-        internal List<Vertex> neighbors;
+        internal List<Tuple<Vertex,int>> neighbors;
     }
-
 
 
     internal class Graph
@@ -45,9 +44,11 @@ namespace Graphs_alg
                 string[] edge = putin.Split(' ');
                 int i;
                 int j;
+                int w; 
                 bool b = Int32.TryParse(edge[0], out i);
                 bool c = Int32.TryParse(edge[1], out j);
-                vertex[i].neighbors.Add(vertex[j]);
+                bool a = Int32.TryParse(edge[2], out w);
+                vertex[i].neighbors.Add(new Tuple<Vertex, int>(vertex[j],w));
             }
         }
 
@@ -59,8 +60,8 @@ namespace Graphs_alg
                 if (vertex[i].neighbors.Count != 0)
                 {
                     for (int j = 0; j < vertex[i].neighbors.Count; j++)
-                        matrix[(vertex[i].number), (vertex[i].neighbors[j].number)] = 1;
-                }
+                        matrix[(vertex[i].number), (vertex[i].neighbors[j].Item1.number)] = vertex[i].neighbors[j].Item2;
+        }
             }
             return matrix;
         }
@@ -77,12 +78,12 @@ namespace Graphs_alg
             {
                 Vertex temp = queue.Dequeue();
                 result.Add(temp);
-                for (int j = 0; j < temp.neighbors.Count; j++)
+                foreach (Tuple<Vertex, int> ver in temp.neighbors)
                 {
-                    if (check[temp.neighbors[j].number] == true)
+                    if (check[ver.Item1.number] == true)
                     {
-                        check[temp.neighbors[j].number] = false;
-                        queue.Enqueue(temp.neighbors[j]);
+                        check[ver.Item1.number] = false;
+                        queue.Enqueue(ver.Item1);
                     }
                 }
             }
@@ -101,12 +102,12 @@ namespace Graphs_alg
                 bool del = true; 
                 Vertex temp = stack.Peek();
                 
-                for (int j = 0; j < temp.neighbors.Count; j++)
+                foreach (Tuple<Vertex, int> ver in temp.neighbors)
                 {
-                    if (check[temp.neighbors[j].number] == true)
+                    if (check[ver.Item1.number] == true)
                     {
-                        check[temp.neighbors[j].number] = false;
-                        stack.Push(temp.neighbors[j]);
+                        check[ver.Item1.number] = false;
+                        stack.Push(ver.Item1);
                         del = false;
                         break;
                     }
@@ -116,6 +117,39 @@ namespace Graphs_alg
                     stack.Pop();
             }
 
+        }
+
+        internal void dijkstra(int index)
+        {
+            int[] minway = new int[count];
+            for(int i = 0; i < count; i++)
+            {
+                if (i == index)
+                    minway[i] = 0;
+                else
+                    minway[i] = -1; 
+            }
+            for (int i = 0; i < count - 1; i++)
+            {
+                int min = 0; 
+                for (int j = 1; j < count; j++)
+                {
+                    if (minway[min] > minway[j])
+                        min = j; 
+                }
+                foreach (Tuple<Vertex, int> edge in vertex[min].neighbors)
+                {
+                    int weight = edge.Item2;
+                    if (minway[edge.Item1.number] == -1)
+                        minway[edge.Item1.number] = weight + minway[min];
+                    else {
+                        if (minway[edge.Item1.number] > minway[min] + weight)
+                            minway[edge.Item1.number] = minway[min] + weight;
+                    }
+
+                }
+
+            }
         }
     }
 
