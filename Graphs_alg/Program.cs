@@ -151,7 +151,21 @@ namespace Graphs_alg
 
             }
         }
+
+        internal void floyd_worshell()
+        {
+            int[,] ways = new int[count, count];
+            ways = matrix();
+            for (int k = 0; k < count; k++)
+                for (int i = 0; i < count; i++)
+                    for (int j = 0; j < count; j++)
+                        if (ways[i, k] + ways[k, j] < ways[i, j])
+                            ways[i, j] = ways[i, k] + ways[k, j];
+
+        }
+
     }
+
 
 
     class Program
