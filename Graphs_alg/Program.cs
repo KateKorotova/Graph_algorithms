@@ -39,8 +39,8 @@ namespace Graphs_alg
             {
                 vertex[iter] = new Vertex(iter);
             }
-                for (int iter = 0; iter < count_edges; iter++)
-            { 
+            for (int iter = 0; iter < count_edges; iter++)
+            {
                 string putin = Console.ReadLine();
                 string[] edge = putin.Split(' ');
                 int i;
@@ -62,7 +62,36 @@ namespace Graphs_alg
                         matrix[(vertex[i].number), (vertex[i].neighbors[j].number)] = 1;
                 }
             }
-            return matrix; 
+            return matrix;
+        }
+
+        internal List<Vertex> bfs(int index)
+        {
+            Queue<Vertex> queue = new Queue<Vertex>();
+            List<Vertex> result = new List<Vertex>();
+            bool[] check = new bool[count];
+            for (int i = 0; i < count; i++)
+                check[i] = true;
+            queue.Enqueue(vertex[index]);
+            while (queue.Count != 0)
+            {
+                Vertex temp = queue.Dequeue();
+                result.Add(temp);
+                for (int j = 0; j < temp.neighbors.Count; j++)
+                {
+                    if (check[temp.neighbors[j].number] == true)
+                    {
+                        check[temp.neighbors[j].number] = false;
+                        queue.Enqueue(temp.neighbors[j]);
+                    }
+                }
+            }
+            return result;
+        }
+
+        internal List<Vertex> dfs(int index)
+        {
+
         }
     }
 
@@ -73,7 +102,7 @@ namespace Graphs_alg
         {
             Graph g = new Graph(5);
             g.read();
-            int[,] m = new int[5,5];
+            int[,] m = new int[5, 5];
             m = g.matrix();
             for (int i = 0; i < 5; i++)
             {
@@ -82,8 +111,14 @@ namespace Graphs_alg
                 Console.WriteLine();
             }
 
+            List<Vertex> temp = new List<Vertex>();
+            temp = g.bfs(2);
+            for(int i = 0; i < temp.Count; i++)
+            {
+                Console.WriteLine(temp[i].number + " ");
+            }
 
-        Console.ReadKey();
+            Console.ReadKey();
         }
     }
 }
